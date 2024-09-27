@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 const Login = () => {
   return (
     <div className="main login"  style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-      <form style={{width: 'fit-content'}}>
+      <form style={{width: 'fit-content'}} method="POST">
         <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
-          <label htmlFor="username" style={{display: 'flex', flexDirection: 'column'}}>
-            username
+          <label htmlFor="email" style={{display: 'flex', flexDirection: 'column'}}>
+            email
             <input
               type="text"
-              name="username"
-              pattern="^[a-zA-Z0-9]+$"
-              title="Special characters and spaces are not allowed"
+              name="email"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"              
+              title="email required to login"
               required
             />
           </label>

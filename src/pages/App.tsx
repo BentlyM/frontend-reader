@@ -54,7 +54,7 @@ function App() {
         }}
       >
         <h2>Posts</h2>
-        {mockPosts && mockPosts.map((post) => <BlogCard {...post} />)}
+        {mockPosts && mockPosts.map((post) => <BlogCard {...post} key={post.id}/>)}
       </div>
     </div>
   );
