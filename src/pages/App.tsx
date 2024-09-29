@@ -14,7 +14,7 @@ function App() {
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    (async () => {
       try {
         const res = await fetch('https://backend-uoiu.onrender.com/api/posts');
         if (!res.ok) throw new Error('Error fetching data');
@@ -26,9 +26,7 @@ function App() {
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchPosts();
+    })();
   }, []);
 
   if (loading) return <div>Loading...</div>;
