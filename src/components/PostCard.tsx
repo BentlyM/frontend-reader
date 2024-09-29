@@ -24,7 +24,7 @@ const BlogCard = ({id , title, content}:{id: number, title: string, content: str
       <p>
         {content}
       </p>
-      <a href={`/post/${id}`} style={{width: 'fit-content'}}>Show more</a>
+      <a href={`/posts/${id}`} style={{width: 'fit-content'}}>Show more</a>
     </div>
   );
 };

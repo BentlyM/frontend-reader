@@ -30,10 +30,10 @@ const Navbar = () => {
         <div>
           <ul style={{ listStyle: 'none', display: 'flex', gap: '15px' }}>
             <li>
-            <Link to={"login"} style={{ textDecoration: 'none', color: 'white' }}>Login</Link>
+            <Link to={"/login"} style={{ textDecoration: 'none', color: 'white' }}>Login</Link>
             </li>
             <li>
-            <Link to={"register"} style={{ textDecoration: 'none', color: 'white' }}>Register</Link>
+            <Link to={"/register"} style={{ textDecoration: 'none', color: 'white' }}>Register</Link>
 
             </li>
           </ul>

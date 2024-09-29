@@ -1,5 +1,6 @@
 import Navbar from "../components/NavBar";
 import App from "../pages/App";
+import CardDetails from "../pages/CardDetails";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 
@@ -23,7 +24,8 @@ const routes : Array<object> /* or object[] */ = [
         ]
     },
     {
-        path: '/blog/:id',
+        path: '/posts/:id',
+        element: <CardDetails isAuthenticated={""} />
     }
 ]
 
