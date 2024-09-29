@@ -22,7 +22,7 @@ function App() {
         const data = await res.json();
         setPosts(data);
       } catch (e) {
-        setErr(`something went wrong: ${e}`);
+        setErr(`${e}`);
       } finally {
         setLoading(false);
       }
@@ -30,7 +30,7 @@ function App() {
   }, []);
 
   if (loading) return <div>Loading...</div>;
-  if (err) return <div>Error: {err}</div>;
+  if (err) return <div>{err}</div>;
 
   return (
     <div
