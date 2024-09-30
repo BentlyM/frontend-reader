@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import BlogCard from '../components/PostCard';
 import './App.css';
 
+type author = {username: string};
 interface Post {
   id: number;
   title: string;
   content: string;
+  author: author;
 }
 
 function App() {

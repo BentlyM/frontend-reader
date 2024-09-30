@@ -3,19 +3,30 @@ import { useParams } from 'react-router-dom';
 import { formatDate } from '../misc/formatData';
 import { useAuth } from '../hooks/AuthProvider';
 
-interface Comments {
+interface Comment {
+  id: number;
   content: string;
   createdAt: string;
+  postId: number;
+  userId: number;
+  post: Post
+  user: {
+    username: string;
+  };
 }
 
 interface Post {
   id: number;
   title: string;
   content: string;
-  comments: Comments[];
-  msg?: string;
+  published: boolean;
   createdAt: string;
+  updatedAt: string;
+  authorId: number;
+  comments: Comment[];
+  msg: string
 }
+
 
 const CardDetails = () => {
   const { id } = useParams();
@@ -30,7 +41,7 @@ const CardDetails = () => {
     (async () => {
       try {
         const res = await fetch(
-          `https://backend-uoiu.onrender.com/api/posts/${id}`
+          `https://backend-uoiu.onrender.com/api/posts/${id}/comments`
         );
         if (!res.ok) throw new Error('Error fetching data');
 
@@ -92,7 +103,7 @@ const CardDetails = () => {
       >
         <span>{comment.content}</span>
         <span className="signature">
-          -by <strong>[Author]</strong> on {formatDate(comment.createdAt)}
+          -by <strong>{comment.user?.username || 'anonymous'}</strong> on {formatDate(comment.createdAt)}
         </span>
       </div>
     ));
@@ -103,7 +114,7 @@ const CardDetails = () => {
 
   return (
     <>
-      {post?.msg == 'Post Not Found' ? (
+      {post?.msg != 'Comments Found' ? (
         <div>Post Does Not Exist...</div>
       ) : (
         <div>
@@ -135,11 +146,11 @@ const CardDetails = () => {
                     width: '100%',
                   }}
                 >
-                  {post?.title}
+                  {post?.comments[0].post.title}
                 </h3>
-                <p>{post?.content}</p>
+                <p>{post?.comments[0].post.content}</p>
                 <p className="signature">
-                  -by <strong>[Author]</strong> on {formatDate(post!.createdAt)}
+                  -by <strong>{post?.comments[0].user.username || 'anonymous'}</strong> on {formatDate(post!.comments[0].post.createdAt)}
                 </p>
                 <div className="comments" style={{ width: '100%' }}>
                   <h3
