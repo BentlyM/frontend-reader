@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [err, setErr] = useState("");
+  const navigate = useNavigate();
 
   const formHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -40,7 +41,9 @@ const Register = () => {
       
       const data = await res.json();
 
-      console.log(data);
+      if(data){
+        navigate('/login');
+      }
     } catch (e) {
       if (e instanceof Error) {
         setErr(e.message); 
