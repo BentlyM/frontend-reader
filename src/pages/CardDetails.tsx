@@ -65,7 +65,7 @@ const CardDetails = () => {
     const comment = target.content.value;
     try {
       await fetch(
-        `https://backend-uoiu.onrender.com/api/posts/${post?.id}/comments`,
+        `https://backend-uoiu.onrender.com/api/posts/${id}/comments`,
         {
           method: 'POST',
           headers: {
