@@ -1,32 +1,46 @@
-import Navbar from "../components/NavBar";
-import App from "../pages/App";
-import CardDetails from "../pages/CardDetails";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
+import React from 'react';
+import AuthProvider from '../hooks/AuthProvider';
+import Navbar from '../components/NavBar';
+import App from '../pages/App';
+import Register from '../pages/Register';
+import Login from '../pages/Login';
+import CardDetails from '../pages/CardDetails';
+import { RouteObject } from 'react-router-dom';
 
-const routes : Array<object> /* or object[] */ = [
-    {
-        path: '/',
-        element: <Navbar />,
-        children: [
-            {
-                index: true,
-                element: <App />
-            },
-            {
-                path: 'register',
-                element: <Register />
-            },
-            {
-                path: 'login',
-                element: <Login />
-            }
-        ]
-    },
-    {
+interface Route {
+  path?: string;
+  element: React.ReactNode;
+  index?: boolean;
+  children?: Route[];
+}
+
+const routes: Route[] = [
+  {
+    path: '/',
+    element: (
+      <AuthProvider>
+        <Navbar />
+      </AuthProvider>
+    ),
+    children: [
+      {
+        index: true,
+        element: <App />,
+      },
+      {
+        path: 'register',
+        element: <Register />,
+      },
+      {
+        path: 'login',
+        element: <Login />,
+      },
+      {
         path: '/posts/:id',
-        element: <CardDetails isAuthenticated={""} />
-    }
-]
+        element: <CardDetails/>, 
+      },
+    ],
+  },
+];
 
-export default routes;
+export default routes as RouteObject[]; // this might break not sure lol

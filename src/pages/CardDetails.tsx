@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Navbar from '../components/NavBar';
 import { formatDate } from '../misc/formatData';
+import { useAuth } from '../hooks/AuthProvider';
 
 interface Comments {
   content: string;
@@ -17,16 +17,14 @@ interface Post {
   createdAt: string;
 }
 
-const CardDetails = ({
-  isAuthenticated,
-}: {
-  isAuthenticated: string /* change this a later */;
-}) => {
+const CardDetails = () => {
   const { id } = useParams();
+  const auth = useAuth();
 
   const [post, setPost] = useState<Post>();
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -44,7 +42,39 @@ const CardDetails = ({
         setLoading(false);
       }
     })();
-  }, [id]);
+  }, [id, comment]);
+
+  const handleComment = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    const target = e.target as typeof e.target & {
+      content: { value: string };
+    };
+
+    const comment = target.content.value;
+    try {
+      await fetch(
+        `https://backend-uoiu.onrender.com/api/posts/${post?.id}/comments`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            content: comment,
+          }),
+        }
+      ); 
+
+      target.content.value = '';
+      
+      setComment(comment);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   function commentCards() {
     return post!.comments.map((comment, index) => (
@@ -77,7 +107,6 @@ const CardDetails = ({
         <div>Post Does Not Exist...</div>
       ) : (
         <div>
-          <Navbar />
           <div
             style={{
               display: 'flex',
@@ -135,39 +164,48 @@ const CardDetails = ({
                 <form
                   className="commentForm"
                   action=""
-                  onSubmit={undefined}
+                  onSubmit={handleComment}
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
                     flexDirection: 'column',
-                    width: '100%'
+                    width: '100%',
                   }}
                 >
-                  <div style={{
-                    display: 'flex',
-                    maxWidth: 'none',
-                    width: 'auto',
-                    flexDirection: 'column',
-                  }}>
-                    <label htmlFor="comment">Comment: </label>
+                  <div
+                    style={{
+                      display: 'flex',
+                      maxWidth: 'none',
+                      width: 'auto',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <label htmlFor="content">Comment: </label>
                     <textarea
-                      name="comment"
+                      name="content"
                       required
                       maxLength={150}
                       minLength={3}
-                      style={{resize: 'vertical', fontSize: 'inherit', padding: '8px', height: '107px'}}
+                      style={{
+                        resize: 'vertical',
+                        fontSize: 'inherit',
+                        padding: '8px',
+                        height: '107px',
+                      }}
                       title={
-                        isAuthenticated ? '' : 'Authenticate to post comments'
+                        auth.isAuthenticated
+                          ? ''
+                          : 'Authenticate to post comments'
                       }
-                      disabled={isAuthenticated ? false : true}
+                      disabled={auth.isAuthenticated ? false : true}
                     ></textarea>
                   </div>
                   <button
                     type="submit"
-                    disabled={isAuthenticated ? false : true}
-                    style={{width: 'fit-content'}}
+                    disabled={auth.isAuthenticated ? false : true}
+                    style={{ width: 'fit-content' }}
                   >
-                    {isAuthenticated ? 'Submit' : 'Log in to comment'}
+                    {auth.isAuthenticated ? 'Submit' : 'Log in to comment'}
                   </button>
                 </form>
                 <div className="errors"></div>

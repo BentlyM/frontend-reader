@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/AuthProvider";
 
 const Login = () => {
   const [err, setErr] = useState("");
-
+  const auth = useAuth();
 
   const formHandler = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -34,7 +35,10 @@ const Login = () => {
         throw new Error(errorData.err || "An error occurred");
       }
 
+      auth.login({email , password})
+
       setErr(""); 
+      return;
     } catch (e) {
       if (e instanceof Error) {
         setErr(e.message); 

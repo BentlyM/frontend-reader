@@ -1,6 +1,9 @@
 import { Link, Outlet } from 'react-router-dom';
+import { useAuth } from '../hooks/AuthProvider';
 
 const Navbar = () => {
+  const auth = useAuth();
+  const user = localStorage.getItem('user');
   return (
     <>
       <nav
@@ -27,17 +30,36 @@ const Navbar = () => {
             </a>
           </span>
         </div>
-        <div>
-          <ul style={{ listStyle: 'none', display: 'flex', gap: '15px' }}>
-            <li>
-            <Link to={"/login"} style={{ textDecoration: 'none', color: 'white' }}>Login</Link>
-            </li>
-            <li>
-            <Link to={"/register"} style={{ textDecoration: 'none', color: 'white' }}>Register</Link>
 
-            </li>
-          </ul>
-        </div>
+        {auth.isAuthenticated ? (
+          <div style={{display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'center', gap: '10px'}}>
+            <span>Welcome {user}!</span>
+            <button onClick={() => auth.logout()} className="btn-submit" style={{width: 'fit-content', height: 'fit-content'}}>
+              logout
+            </button>
+          </div>
+        ) : (
+          <div>
+            <ul style={{ listStyle: 'none', display: 'flex', gap: '15px' }}>
+              <li>
+                <Link
+                  to={'/login'}
+                  style={{ textDecoration: 'none', color: 'white' }}
+                >
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={'/register'}
+                  style={{ textDecoration: 'none', color: 'white' }}
+                >
+                  Register
+                </Link>
+              </li>
+            </ul>
+          </div>
+        )}
       </nav>
       <Outlet />
     </>
