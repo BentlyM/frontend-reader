@@ -14,6 +14,7 @@ interface Comment {
 
 interface Post {
   id: number;
+  author: {username: string}
   title: string;
   content: string;
   published: boolean;
@@ -38,12 +39,22 @@ const CardDetails: React.FC = () => {
         const res = await fetch(
           `https://backend-uoiu.onrender.com/api/posts/${id}`
         );
-        if (!res.ok) throw new Error('Error fetching data');
 
-        const data = await res.json();
-        setPost(data);
+        if (res.status === 200) {
+          const data = await res.json();
+          if (data?.msg) {
+            setErr(data.msg);
+          }
+          setPost(data);
+        } else if (res.status === 400) {
+          throw new Error('Post not found');
+        } else {
+          throw new Error('Something went wrong');
+        }
       } catch (e) {
-        setErr(`${e}`);
+        if (e instanceof Error) {
+          setErr(`${e.message}`);
+        }
       } finally {
         setLoading(false);
       }
@@ -75,7 +86,9 @@ const CardDetails: React.FC = () => {
       target.content.value = '';
       setComment(comment);
     } catch (e) {
-      console.error(e);
+      if (e instanceof Error) {
+        setErr(e.message);
+      }
     }
   };
 
@@ -102,10 +115,11 @@ const CardDetails: React.FC = () => {
   };
 
   if (loading) return <div>Loading...</div>;
-  if (err) return <div>{err}</div>;
+  if (err) return <div style={{ color: 'red' }}>{err}</div>;
 
   return (
     <div>
+      {err && <div>{err}</div>}
       {!post ? (
         <div>Post Does Not Exist...</div>
       ) : (
@@ -138,7 +152,7 @@ const CardDetails: React.FC = () => {
             <p>{post.content}</p>
             <p className="signature">
               -by{' '}
-              <strong>{post.comments[0]?.user.username || 'anonymous'}</strong>{' '}
+              <strong>{post.author.username || 'anonymous'}</strong>{' '}
               on {formatDate(post.createdAt)}
             </p>
             <div className="comments" style={{ width: '100%' }}>
