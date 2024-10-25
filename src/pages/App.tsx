@@ -8,6 +8,7 @@ interface Post {
   title: string;
   content: string;
   author: author;
+  published: boolean;
 }
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
         const res = await fetch('https://backend-uoiu.onrender.com/api/posts');
         if (!res.ok) throw new Error('Error fetching data');
 
-        const data = await res.json();
+        const data: Post[] = await res.json();
         setPosts(data);
       } catch (e) {
         setErr(`${e}`);
@@ -51,7 +52,7 @@ function App() {
       >
         <h2>Posts</h2>
         {(posts.length > 0) ? (
-          posts.map((post) => <BlogCard {...post} key={post.id} />)
+          posts.filter(post => post.published).map((post) => <BlogCard {...post} key={post.id} />)
         ) : (
           <div>No posts...</div>
         )}{' '}
